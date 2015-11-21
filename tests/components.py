@@ -71,3 +71,18 @@ class RatingsBlock(Component):
     @property
     def average_rating(self):
         return float(self.driver.find_element_by_xpath(self.AVERAGE_RATING_XPATH).text)
+
+
+class ReviewText(Component):
+    COMMON_TEXT_INPUT_XPATH = '//*[@name="common_text"]'
+    ADVANTAGES_TEXT_INPUT_XPATH = '//*[@name="advantages_text"]'
+    PROBLEMS_TEXT_INPUT_XPATH = '//*[@name="problems_text"]'
+
+    def set_common_text(self, text):
+        self.driver.find_element_by_xpath(self.COMMON_TEXT_INPUT_XPATH).send_keys(text)
+
+    def set_advantages_text(self, text):
+        self.driver.find_element_by_xpath(self.ADVANTAGES_TEXT_INPUT_XPATH).send_keys(text)
+
+    def set_problems_text(self, text):
+        self.driver.find_element_by_xpath(self.PROBLEMS_TEXT_INPUT_XPATH).send_keys(text)
