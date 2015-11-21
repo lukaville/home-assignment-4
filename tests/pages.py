@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import urlparse
-from selenium import webdriver
-from components import AuthForm
+
+from components import AuthForm, MenuBar
 
 
 class Page(object):
@@ -21,3 +21,7 @@ class MainPage(Page):
     @property
     def auth_form(self):
         return AuthForm(self.driver)
+
+    @property
+    def menu_bar(self):
+        return MenuBar(self.driver)

@@ -2,11 +2,11 @@
 
 import unittest
 import sys
-from tests.review_test import AuthTest
+from tests.review_test import LoginTest
 
 if __name__ == '__main__':
     suite = unittest.TestSuite((
-        unittest.makeSuite(AuthTest),
+        unittest.makeSuite(LoginTest),
     ))
     result = unittest.TextTestRunner().run(suite)
     sys.exit(not result.wasSuccessful())

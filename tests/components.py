@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from selenium.webdriver.support.ui import WebDriverWait
-
 
 class Component(object):
     def __init__(self, driver):
@@ -25,3 +23,15 @@ class AuthForm(Component):
 
     def submit(self):
         self.driver.find_element_by_xpath(self.SUBMIT).click()
+
+
+class MenuBar(Component):
+    EMAIL_FIELD = '//*[@id="PH_user-email"]'
+    LOGOUT_BUTTON = '//*[@id="PH_logoutLink"]'
+
+    def logout(self):
+        self.driver.find_element_by_xpath(self.LOGOUT_BUTTON).click()
+
+    @property
+    def email_value(self):
+        return self.driver.find_element_by_xpath(self.EMAIL_FIELD).text
