@@ -2,7 +2,7 @@
 
 import urlparse
 
-from components import AuthForm, MenuBar
+from components import AuthForm, MenuBar, RatingsBlock
 
 
 class Page(object):
@@ -17,10 +17,9 @@ class Page(object):
         self.driver.get(url)
 
 
-class MainPage(Page):
-
+class BasePage(Page):
     def __init__(self, driver):
-        super(MainPage, self).__init__(driver)
+        super(BasePage, self).__init__(driver)
         self.auth_form = AuthForm(driver)
         self.menu_bar = MenuBar(driver)
 
@@ -33,3 +32,15 @@ class MainPage(Page):
 
     def logout(self):
         self.menu_bar.logout()
+
+
+class MainPage(BasePage):
+    pass
+
+
+class AddReviewPage(BasePage):
+    PATH = 'reviews/add_edit_review/'
+
+    def __init__(self, driver):
+        super(AddReviewPage, self).__init__(driver)
+        self.ratings = RatingsBlock(driver)
