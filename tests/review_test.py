@@ -18,7 +18,7 @@ class AuthTest(unittest.TestCase):
         page.open()
 
         auth_form = page.auth_form
-        auth_form.open_form
+        auth_form.open_form()
         auth_form.set_login("login")
         auth_form.set_password("password")
         auth_form.submit()
