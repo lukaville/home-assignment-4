@@ -11,7 +11,6 @@ class AuthTest(unittest.TestCase):
         self.driver = webdriver.Firefox()
 
     def tearDown(self):
-        pass
         self.driver.quit()
 
     def test(self):
