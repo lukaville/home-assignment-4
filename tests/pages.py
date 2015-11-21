@@ -18,10 +18,17 @@ class Page(object):
 
 
 class MainPage(Page):
-    @property
-    def auth_form(self):
-        return AuthForm(self.driver)
 
-    @property
-    def menu_bar(self):
-        return MenuBar(self.driver)
+    def __init__(self, driver):
+        super(MainPage, self).__init__(driver)
+        self.auth_form = AuthForm(driver)
+        self.menu_bar = MenuBar(driver)
+
+    def login(self, login, password):
+        self.menu_bar.open_login_form()
+        self.auth_form.set_login(login)
+        self.auth_form.set_password(password)
+        self.auth_form.submit()
+
+    def logout(self):
+        self.menu_bar.logout()

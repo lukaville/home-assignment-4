@@ -7,13 +7,9 @@ class Component(object):
 
 
 class AuthForm(Component):
-    OPEN_LOGIN_FORM_BUTTON = '//*[@id="PH_authLink"]'
     LOGIN = '//*[@id="ph_login"]'
     PASSWORD = '//*[@id="ph_password"]'
     SUBMIT = '//*[@class="x-ph__button__input"]'
-
-    def open_form(self):
-        self.driver.find_element_by_xpath(self.OPEN_LOGIN_FORM_BUTTON).click()
 
     def set_login(self, login):
         self.driver.find_element_by_xpath(self.LOGIN).send_keys(login)
@@ -26,8 +22,12 @@ class AuthForm(Component):
 
 
 class MenuBar(Component):
+    OPEN_LOGIN_FORM_BUTTON = '//*[@id="PH_authLink"]'
     EMAIL_FIELD = '//*[@id="PH_user-email"]'
     LOGOUT_BUTTON = '//*[@id="PH_logoutLink"]'
+
+    def open_login_form(self):
+        self.driver.find_element_by_xpath(self.OPEN_LOGIN_FORM_BUTTON).click()
 
     def logout(self):
         self.driver.find_element_by_xpath(self.LOGOUT_BUTTON).click()
@@ -35,3 +35,7 @@ class MenuBar(Component):
     @property
     def email_value(self):
         return self.driver.find_element_by_xpath(self.EMAIL_FIELD).text
+
+    @property
+    def login_form_button(self):
+        return self.driver.find_element_by_xpath(self.OPEN_LOGIN_FORM_BUTTON)
