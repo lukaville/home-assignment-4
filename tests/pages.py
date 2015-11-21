@@ -26,6 +26,7 @@ class MainPage(Page):
 
     def login(self, login, password):
         self.menu_bar.open_login_form()
+        self.auth_form.wait_until_form_is_loaded()
         self.auth_form.set_login(login)
         self.auth_form.set_password(password)
         self.auth_form.submit()
