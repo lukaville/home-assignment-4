@@ -63,12 +63,12 @@ class AverageRatingTest(BaseTestCase):
             {"name": RatingsBlock.SERVICE_RATING_NAME, "rating": 1}
         ]
 
-        average_rating = sum([x["rating"] for x in ratings]) // len(ratings)
+        average_rating = float(sum([x["rating"] for x in ratings])) / float(len(ratings))
 
         for rating in ratings:
             self.page.ratings.set_rating(rating["name"], rating["rating"])
 
-        self.assertAlmostEqual(average_rating, average_rating)
+        self.assertAlmostEqual(average_rating, average_rating, places=1)
 
     def tearDown(self):
         self.driver.quit()
