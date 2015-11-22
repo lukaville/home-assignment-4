@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
 import unittest
+from collections import OrderedDict
 
 from selenium import webdriver
 
 from pages import MainPage, AddReviewPage
 from tests.asserts import CustomAssertions
-from tests.components import RatingsBlock
+from tests.components import RatingsBlock, CarSelect
 
 
 class LoginTest(unittest.TestCase):
@@ -75,4 +76,37 @@ class AverageRatingTest(unittest.TestCase):
         self.assertAlmostEqual(average_rating, average_rating)
 
     def tearDown(self):
+        self.page.logout()
+        self.driver.quit()
+
+
+class CarSelectionTest(unittest.TestCase):
+    LOGIN = os.environ['TTHA4LOGIN']
+    PASSWORD = os.environ['TTHA4PASSWORD']
+    BRAND = "Audi"
+    MODEL = "100"
+    YEAR = "1996"
+    MODIFICATION = "1.6 AT"
+    RUN_CURRENT = "123321"
+
+    def setUp(self):
+        self.driver = webdriver.Firefox()
+        self.page = AddReviewPage(self.driver)
+        self.page.open()
+        self.page.login(self.LOGIN, self.PASSWORD)
+
+    def test(self):
+        selects = OrderedDict([("Марка", self.BRAND),
+                               ("Модель", self.MODEL),
+                               ("Год производства", self.YEAR),
+                               ("Модификация", self.MODIFICATION)])
+
+        select = CarSelect(self.driver)
+        for k, v in selects.iteritems():
+            select.select_option(k, v)
+        select.set_run_current(self.RUN_CURRENT)
+
+    def tearDown(self):
+        pass
+        self.page.logout()
         self.driver.quit()

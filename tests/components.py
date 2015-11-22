@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
+
+from tests.utils import wait_invisibility_by_xpath, wait_visibility_by_xpath
 
 
 class Component(object):
@@ -16,9 +15,7 @@ class AuthForm(Component):
     SUBMIT_XPATH = '//*[@class="x-ph__button__input"]'
 
     def wait_until_form_is_loaded(self):
-        WebDriverWait(self.driver, 30).until(
-            EC.invisibility_of_element_located((By.XPATH, self.PRELOADER_XPATH))
-        )
+        wait_invisibility_by_xpath(self.driver, self.PRELOADER_XPATH)
 
     def set_login(self, login):
         self.driver.find_element_by_xpath(self.LOGIN_XPATH).send_keys(login)
@@ -39,9 +36,7 @@ class MenuBar(Component):
         self.driver.find_element_by_xpath(self.OPEN_LOGIN_FORM_BUTTON_XPATH).click()
 
     def logout(self):
-        WebDriverWait(self.driver, 30).until(
-            EC.visibility_of_element_located((By.XPATH, self.LOGOUT_BUTTON_XPATH))
-        )
+        wait_visibility_by_xpath(self.driver, self.LOGOUT_BUTTON_XPATH)
         self.driver.find_element_by_xpath(self.LOGOUT_BUTTON_XPATH).click()
 
     @property
@@ -86,3 +81,22 @@ class ReviewText(Component):
 
     def set_problems_text(self, text):
         self.driver.find_element_by_xpath(self.PROBLEMS_TEXT_INPUT_XPATH).send_keys(text)
+
+
+class CarSelect(Component):
+    SELECT_BY_TITLE_XPATH = '//*[@data-title="{title}"]'
+    SELECT_DISABLED_BY_TITLE_XPATH = '//*[@data-title="{title}"]/div[1][contains(@class, "input__box_disabled")]'
+    VALUE_BY_TITLE_XPATH = '//*[contains(@class, "input__data__value") and text()="{value}"]'
+    RUN_CURRENT_INPUT_XPATH = '//*[@class="input__data__value selt-run_current" and not(@data-type="masked")]'
+
+    def select_option(self, title, value):
+        wait_invisibility_by_xpath(self.driver, self.SELECT_DISABLED_BY_TITLE_XPATH.format(title=title))
+        self.driver.find_element_by_xpath(self.SELECT_BY_TITLE_XPATH.format(title=title)).click()
+        self.driver.find_element_by_xpath(self.VALUE_BY_TITLE_XPATH.format(value=value)).click()
+
+    def set_run_current(self, value):
+        self.driver.find_element_by_xpath(self.RUN_CURRENT_INPUT_XPATH).send_keys(value)
+
+    @property
+    def run_current(self):
+        return self.driver.find_element_by_xpath(self.RUN_CURRENT_INPUT_XPATH).text
