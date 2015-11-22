@@ -79,9 +79,7 @@ class AverageRatingTest(BaseTestCase):
 
         average_rating = float(sum([x["rating"] for x in ratings])) / float(len(ratings))
 
-        for rating in ratings:
-            self.page.ratings.set_rating(rating["name"], rating["rating"])
-
+        self.page.set_ratings(ratings)
         self.assertAlmostEqual(average_rating, average_rating, places=1)
 
     def tearDown(self):
@@ -101,15 +99,15 @@ class CarSelectionTest(BaseTestCase):
         self.page.open()
 
     def test(self):
-        selects = OrderedDict([("Марка", self.BRAND),
+        options = OrderedDict([("Марка", self.BRAND),
                                ("Модель", self.MODEL),
                                ("Год производства", self.YEAR),
                                ("Модификация", self.MODIFICATION)])
 
+        self.page.select_car_options(options)
+        self.page.set_run_current(self.RUN_CURRENT)
+
         select = self.page.car_select
-        for k, v in selects.iteritems():
-            select.select_option(k, v)
-        select.set_run_current(self.RUN_CURRENT)
 
         self.assertEqual(self.BRAND, select.get_current_value("Марка"))
         self.assertEqual(self.MODEL, select.get_current_value("Модель"))
@@ -138,10 +136,8 @@ class ReviewTextTest(BaseTestCase):
 
     def test(self):
         reviews = self.page.review_inputs
-        reviews.set_common_text(self.COMMON_TEXT)
-        reviews.set_advantages_text(self.ADVANTAGES_TEXT)
-        reviews.set_problems_text(self.PROBLEMS_TEXT)
 
+        self.page.set_texts(self.COMMON_TEXT, self.ADVANTAGES_TEXT, self.PROBLEMS_TEXT)
         self.assertEqual(self.COMMON_TEXT, reviews.common_text)
         self.assertEqual(self.ADVANTAGES_TEXT, reviews.advantages_text)
         self.assertEqual(self.PROBLEMS_TEXT, reviews.problems_text)

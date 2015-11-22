@@ -2,7 +2,7 @@
 
 import urlparse
 
-from components import AuthForm, MenuBar, RatingsBlock, CarSelect, ReviewText
+from components import AuthForm, MenuBar, RatingsBlock, CarSelect, ReviewText, AddReviewButton
 
 
 class Page(object):
@@ -46,3 +46,23 @@ class AddReviewPage(BasePage):
         self.ratings = RatingsBlock(driver)
         self.car_select = CarSelect(driver)
         self.review_inputs = ReviewText(driver)
+        self.add_button = AddReviewButton(driver)
+
+    def set_ratings(self, ratings):
+        for rating in ratings:
+            self.ratings.set_rating(rating["name"], rating["rating"])
+
+    def select_car_options(self, options):
+        for k, v in options.iteritems():
+            self.car_select.select_option(k, v)
+
+    def set_run_current(self, current):
+        self.car_select.set_run_current(current)
+
+    def set_texts(self, common, advantages, problems):
+        self.review_inputs.set_common_text(common)
+        self.review_inputs.set_advantages_text(advantages)
+        self.review_inputs.set_problems_text(problems)
+
+    def add_review(self):
+        self.add_button.add_review()

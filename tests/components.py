@@ -120,3 +120,11 @@ class CarSelect(Component):
 
     def get_current_value(self, title):
         return self.driver.find_element_by_xpath(self.CURRENT_SELECT_VALUE_XPATH.format(title=title)).text
+
+
+class AddReviewButton(Component):
+    ADD_REVIEW_BUTTON_XPATH = '//button[@class="button js-check_auth"]'
+
+    def add_review(self):
+        self.driver.find_element_by_xpath(self.ADD_REVIEW_BUTTON_XPATH).click()
+
