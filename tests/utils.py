@@ -21,7 +21,7 @@ class element_to_be_enabled(object):
 
     def __call__(self, driver):
         element = driver.find_element(by=By.XPATH, value=self.xpath)
-        if element.is_enabled():
+        if element and element.is_enabled():
             return element
         else:
             return False

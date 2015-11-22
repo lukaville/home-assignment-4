@@ -16,6 +16,8 @@ class AuthForm(Component):
 
     def wait_until_form_is_loaded(self):
         wait_invisibility_by_xpath(self.driver, self.PRELOADER_XPATH)
+        wait_visibility_by_xpath(self.driver, self.LOGIN_XPATH)
+        wait_visibility_by_xpath(self.driver, self.PASSWORD_XPATH)
         wait_enabled_by_xpath(self.driver, self.SUBMIT_XPATH)
 
     def set_login(self, login):
@@ -42,6 +44,7 @@ class MenuBar(Component):
 
     @property
     def email_value(self):
+        wait_visibility_by_xpath(self.driver, self.EMAIL_FIELD_XPATH)
         return self.driver.find_element_by_xpath(self.EMAIL_FIELD_XPATH).text
 
     @property
