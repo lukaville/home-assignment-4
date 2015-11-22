@@ -13,12 +13,19 @@ from tests.components import RatingsBlock
 class BaseTestCase(unittest.TestCase):
     LOGIN = os.environ['TTHA4LOGIN']
     PASSWORD = os.environ['TTHA4PASSWORD']
+    BROWSER = os.environ['TTHA4BROWSER']
+
+    drivers = {
+        'FIREFOX': webdriver.Firefox,
+        'CHROME': webdriver.Chrome
+    }
+
+    @classmethod
+    def setUpClass(cls):
+        cls.driver = cls.drivers[cls.BROWSER]()
 
 
 class LoginTest(BaseTestCase):
-    def setUp(self):
-        self.driver = webdriver.Firefox()
-
     def tearDown(self):
         self.page.logout()
         self.driver.quit()
@@ -34,7 +41,6 @@ class LoginTest(BaseTestCase):
 
 class LogoutTest(BaseTestCase, CustomAssertions):
     def setUp(self):
-        self.driver = webdriver.Firefox()
         self.page = MainPage(self.driver)
         self.page.open()
         self.page.login(self.LOGIN, self.PASSWORD)
@@ -49,7 +55,6 @@ class LogoutTest(BaseTestCase, CustomAssertions):
 
 class AverageRatingTest(BaseTestCase):
     def setUp(self):
-        self.driver = webdriver.Firefox()
         self.page = AddReviewPage(self.driver)
         self.page.open()
 
@@ -83,7 +88,6 @@ class CarSelectionTest(BaseTestCase):
     RESULT_CURRENT = "123 321"
 
     def setUp(self):
-        self.driver = webdriver.Firefox()
         self.page = AddReviewPage(self.driver)
         self.page.open()
 
@@ -120,7 +124,6 @@ class ReviewTextTest(BaseTestCase):
                     "Problems text Problems text Problems text Problems text Problems text "
 
     def setUp(self):
-        self.driver = webdriver.Firefox()
         self.page = AddReviewPage(self.driver)
         self.page.open()
 
