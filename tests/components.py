@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tests.utils import wait_invisibility_by_xpath, wait_visibility_by_xpath
+from tests.utils import wait_invisibility_by_xpath, wait_visibility_by_xpath, wait_enabled_by_xpath
 
 
 class Component(object):
@@ -16,6 +16,7 @@ class AuthForm(Component):
 
     def wait_until_form_is_loaded(self):
         wait_invisibility_by_xpath(self.driver, self.PRELOADER_XPATH)
+        wait_enabled_by_xpath(self.driver, self.SUBMIT_XPATH)
 
     def set_login(self, login):
         self.driver.find_element_by_xpath(self.LOGIN_XPATH).send_keys(login)
@@ -24,7 +25,7 @@ class AuthForm(Component):
         self.driver.find_element_by_xpath(self.PASSWORD_XPATH).send_keys(password)
 
     def submit(self):
-        self.driver.find_element_by_xpath(self.SUBMIT_XPATH).click()
+        self.driver.find_element_by_xpath(self.SUBMIT_XPATH).submit()
 
 
 class MenuBar(Component):
