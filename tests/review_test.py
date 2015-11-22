@@ -4,6 +4,7 @@ import unittest
 from collections import OrderedDict
 
 from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities, Remote
 
 from pages import MainPage, AddReviewPage
 from tests.asserts import CustomAssertions
@@ -15,6 +16,8 @@ class BaseTestCase(unittest.TestCase):
     PASSWORD = os.environ['TTHA4PASSWORD']
     BROWSER = os.environ['TTHA4BROWSER']
 
+    REMOTE = True
+
     drivers = {
         'FIREFOX': webdriver.Firefox,
         'CHROME': webdriver.Chrome
@@ -22,7 +25,13 @@ class BaseTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.driver = cls.drivers[cls.BROWSER]()
+        if cls.REMOTE:
+            cls.driver = Remote(
+                command_executor='http://127.0.0.1:4444/wd/hub',
+                desired_capabilities=getattr(DesiredCapabilities, cls.BROWSER).copy()
+            )
+        else:
+            cls.driver = cls.drivers[cls.BROWSER]()
 
 
 class LoginTest(BaseTestCase):
