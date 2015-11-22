@@ -2,7 +2,7 @@
 
 import urlparse
 
-from components import AuthForm, MenuBar, RatingsBlock
+from components import AuthForm, MenuBar, RatingsBlock, CarSelect, ReviewText
 
 
 class Page(object):
@@ -44,3 +44,5 @@ class AddReviewPage(BasePage):
     def __init__(self, driver):
         super(AddReviewPage, self).__init__(driver)
         self.ratings = RatingsBlock(driver)
+        self.car_select = CarSelect(driver)
+        self.review_inputs = ReviewText(driver)

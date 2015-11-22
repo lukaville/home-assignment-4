@@ -82,9 +82,22 @@ class ReviewText(Component):
     def set_problems_text(self, text):
         self.driver.find_element_by_xpath(self.PROBLEMS_TEXT_INPUT_XPATH).send_keys(text)
 
+    @property
+    def common_text(self):
+        return self.driver.find_element_by_xpath(self.COMMON_TEXT_INPUT_XPATH).get_attribute('value')
+
+    @property
+    def advantages_text(self):
+        return self.driver.find_element_by_xpath(self.ADVANTAGES_TEXT_INPUT_XPATH).get_attribute('value')
+
+    @property
+    def problems_text(self):
+        return self.driver.find_element_by_xpath(self.PROBLEMS_TEXT_INPUT_XPATH).get_attribute('value')
+
 
 class CarSelect(Component):
     SELECT_BY_TITLE_XPATH = '//*[@data-title="{title}"]'
+    CURRENT_SELECT_VALUE_XPATH = '//*[@data-title="{title}"]/div/div/div'
     SELECT_DISABLED_BY_TITLE_XPATH = '//*[@data-title="{title}"]/div[1][contains(@class, "input__box_disabled")]'
     VALUE_BY_TITLE_XPATH = '//*[contains(@class, "input__data__value") and text()="{value}"]'
     RUN_CURRENT_INPUT_XPATH = '//*[@class="input__data__value selt-run_current" and not(@data-type="masked")]'
@@ -99,4 +112,7 @@ class CarSelect(Component):
 
     @property
     def run_current(self):
-        return self.driver.find_element_by_xpath(self.RUN_CURRENT_INPUT_XPATH).text
+        return self.driver.find_element_by_xpath(self.RUN_CURRENT_INPUT_XPATH).get_attribute('value')
+
+    def get_current_value(self, title):
+        return self.driver.find_element_by_xpath(self.CURRENT_SELECT_VALUE_XPATH.format(title=title)).text

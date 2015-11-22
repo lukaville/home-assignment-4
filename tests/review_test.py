@@ -7,13 +7,15 @@ from selenium import webdriver
 
 from pages import MainPage, AddReviewPage
 from tests.asserts import CustomAssertions
-from tests.components import RatingsBlock, CarSelect
+from tests.components import RatingsBlock
 
 
-class LoginTest(unittest.TestCase):
+class BaseTestCase(unittest.TestCase):
     LOGIN = os.environ['TTHA4LOGIN']
     PASSWORD = os.environ['TTHA4PASSWORD']
 
+
+class LoginTest(BaseTestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
 
@@ -30,10 +32,7 @@ class LoginTest(unittest.TestCase):
         self.assertEqual(menu_bar.email_value, self.LOGIN)
 
 
-class LogoutTest(unittest.TestCase, CustomAssertions):
-    LOGIN = os.environ['TTHA4LOGIN']
-    PASSWORD = os.environ['TTHA4PASSWORD']
-
+class LogoutTest(BaseTestCase, CustomAssertions):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.page = MainPage(self.driver)
@@ -48,15 +47,11 @@ class LogoutTest(unittest.TestCase, CustomAssertions):
         self.driver.quit()
 
 
-class AverageRatingTest(unittest.TestCase):
-    LOGIN = os.environ['TTHA4LOGIN']
-    PASSWORD = os.environ['TTHA4PASSWORD']
-
+class AverageRatingTest(BaseTestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.page = AddReviewPage(self.driver)
         self.page.open()
-        self.page.login(self.LOGIN, self.PASSWORD)
 
     def test(self):
         ratings = [
@@ -76,24 +71,21 @@ class AverageRatingTest(unittest.TestCase):
         self.assertAlmostEqual(average_rating, average_rating)
 
     def tearDown(self):
-        self.page.logout()
         self.driver.quit()
 
 
-class CarSelectionTest(unittest.TestCase):
-    LOGIN = os.environ['TTHA4LOGIN']
-    PASSWORD = os.environ['TTHA4PASSWORD']
+class CarSelectionTest(BaseTestCase):
     BRAND = "Audi"
     MODEL = "100"
     YEAR = "1996"
     MODIFICATION = "1.6 AT"
     RUN_CURRENT = "123321"
+    RESULT_CURRENT = "123 321"
 
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.page = AddReviewPage(self.driver)
         self.page.open()
-        self.page.login(self.LOGIN, self.PASSWORD)
 
     def test(self):
         selects = OrderedDict([("Марка", self.BRAND),
@@ -101,12 +93,46 @@ class CarSelectionTest(unittest.TestCase):
                                ("Год производства", self.YEAR),
                                ("Модификация", self.MODIFICATION)])
 
-        select = CarSelect(self.driver)
+        select = self.page.car_select
         for k, v in selects.iteritems():
             select.select_option(k, v)
         select.set_run_current(self.RUN_CURRENT)
 
+        self.assertEqual(self.BRAND, select.get_current_value("Марка"))
+        self.assertEqual(self.MODEL, select.get_current_value("Модель"))
+        self.assertEqual(self.YEAR, select.get_current_value("Год производства"))
+        self.assertEqual(self.MODIFICATION, select.get_current_value("Модификация"))
+        self.assertEqual(self.RESULT_CURRENT, select.run_current)
+
     def tearDown(self):
-        pass
-        self.page.logout()
+        self.driver.quit()
+
+
+class ReviewTextTest(BaseTestCase):
+    ADVANTAGES_TEXT = "Advantages test Advantages test Advantages test Advantages test " \
+                      "Advantages test Advantages test Advantages test Advantages test " \
+                      "Advantages test Advantages test Advantages test Advantages test "
+    COMMON_TEXT = "Common text Common text Common text Common text Common text Common text " \
+                  "Common text Common text Common text Common text Common text Common text " \
+                  "Common text Common text Common text Common text Common text Common text "
+    PROBLEMS_TEXT = "Problems text Problems text Problems text Problems text Problems text " \
+                    "Problems text Problems text Problems text Problems text Problems text " \
+                    "Problems text Problems text Problems text Problems text Problems text "
+
+    def setUp(self):
+        self.driver = webdriver.Firefox()
+        self.page = AddReviewPage(self.driver)
+        self.page.open()
+
+    def test(self):
+        reviews = self.page.review_inputs
+        reviews.set_common_text(self.COMMON_TEXT)
+        reviews.set_advantages_text(self.ADVANTAGES_TEXT)
+        reviews.set_problems_text(self.PROBLEMS_TEXT)
+
+        self.assertEqual(self.COMMON_TEXT, reviews.common_text)
+        self.assertEqual(self.ADVANTAGES_TEXT, reviews.advantages_text)
+        self.assertEqual(self.PROBLEMS_TEXT, reviews.problems_text)
+
+    def tearDown(self):
         self.driver.quit()
