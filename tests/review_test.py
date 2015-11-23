@@ -15,8 +15,7 @@ class BaseTestCase(unittest.TestCase):
     LOGIN = os.environ['TTHA4LOGIN']
     PASSWORD = os.environ['TTHA4PASSWORD']
     BROWSER = os.environ['TTHA4BROWSER']
-
-    REMOTE = True
+    LOCAL = "LOCAL" in os.environ
 
     drivers = {
         'FIREFOX': webdriver.Firefox,
@@ -25,13 +24,13 @@ class BaseTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if cls.REMOTE:
+        if cls.LOCAL:
+            cls.driver = cls.drivers[cls.BROWSER]()
+        else:
             cls.driver = Remote(
                 command_executor='http://127.0.0.1:4444/wd/hub',
                 desired_capabilities=getattr(DesiredCapabilities, cls.BROWSER).copy()
             )
-        else:
-            cls.driver = cls.drivers[cls.BROWSER]()
 
 
 class LoginTest(BaseTestCase):
