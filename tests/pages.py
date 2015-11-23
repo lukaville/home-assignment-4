@@ -3,7 +3,7 @@
 import urlparse
 
 from components import AuthForm, MenuBar, RatingsBlock, CarSelect, AddReviewText, AddReviewButton, AddResultButtons, \
-    ReviewText
+    ReviewText, ReviewManagement, ReviewRemovePopup, ReviewInfo
 from tests.utils import wait_visibility_by_xpath
 
 
@@ -80,4 +80,20 @@ class AddReviewPage(BasePage):
 class ReviewPage(BasePage):
     def __init__(self, driver):
         super(ReviewPage, self).__init__(driver)
+        self.review_info = ReviewInfo(driver)
         self.review_text = ReviewText(driver)
+        self.review_management = ReviewManagement(driver)
+        self.remove_popup = ReviewRemovePopup(driver)
+
+    def remove_review(self):
+        self.review_management.remove_review()
+        self.remove_popup.wait_popup()
+        self.remove_popup.confirm_remove()
+
+    @property
+    def review_title(self):
+        return self.review_info.title
+
+    @property
+    def review_avg_rating(self):
+        return self.review_info.avg_rating

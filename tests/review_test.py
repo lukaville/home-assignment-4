@@ -76,7 +76,7 @@ class AverageRatingTest(BaseTestCase):
             {"name": RatingsBlock.SERVICE_RATING_NAME, "rating": 1}
         ]
 
-        average_rating = float(sum([x["rating"] for x in ratings])) / float(len(ratings))
+        average_rating = round(float(sum([x["rating"] for x in ratings])) / float(len(ratings)), 1)
 
         self.page.set_ratings(ratings)
         self.assertAlmostEqual(average_rating, average_rating, places=1)
@@ -119,15 +119,9 @@ class CarSelectionTest(BaseTestCase):
 
 
 class ReviewTextInputTest(BaseTestCase):
-    ADVANTAGES_TEXT = "Advantages test Advantages test Advantages test Advantages test " \
-                      "Advantages test Advantages test Advantages test Advantages test " \
-                      "Advantages test Advantages test Advantages test Advantages test "
-    COMMON_TEXT = "Common text Common text Common text Common text Common text Common text " \
-                  "Common text Common text Common text Common text Common text Common text " \
-                  "Common text Common text Common text Common text Common text Common text "
-    PROBLEMS_TEXT = "Problems text Problems text Problems text Problems text Problems text " \
-                    "Problems text Problems text Problems text Problems text Problems text " \
-                    "Problems text Problems text Problems text Problems text Problems text "
+    ADVANTAGES_TEXT = "Advantages" * 40
+    COMMON_TEXT = "Common" * 40
+    PROBLEMS_TEXT = "Problems" * 40
 
     def setUp(self):
         self.page = AddReviewPage(self.driver)
@@ -158,7 +152,7 @@ class AddReviewTest(BaseTestCase):
             {"name": RatingsBlock.CONTROL_RATING_NAME, "rating": 3},
             {"name": RatingsBlock.ERGONOMICS_RATING_NAME, "rating": 3},
             {"name": RatingsBlock.RELIABILITY_RATING_NAME, "rating": 2},
-            {"name": RatingsBlock.SERVICE_RATING_NAME, "rating": 1}
+            {"name": RatingsBlock.SERVICE_RATING_NAME, "rating": 2}
     ]
 
     # Car options
@@ -168,36 +162,39 @@ class AddReviewTest(BaseTestCase):
     MODIFICATION = "1.6 AT"
     RUN_CURRENT = "400"
 
+    REVIEW_TITLE = BRAND + " " + MODEL + " " + MODIFICATION + " " + YEAR + u" г."
+
     def setUp(self):
-        self.page = AddReviewPage(self.driver)
-        self.page.open()
-        self.page.login(self.LOGIN, self.PASSWORD)
+        self.add_review_page = AddReviewPage(self.driver)
+        self.add_review_page.open()
+        self.add_review_page.login(self.LOGIN, self.PASSWORD)
 
     def test(self):
-        self.page.set_ratings(self.RATINGS)
+        self.add_review_page.set_ratings(self.RATINGS)
 
         options = OrderedDict([("Марка", self.BRAND),
                                ("Модель", self.MODEL),
                                ("Год производства", self.YEAR),
                                ("Модификация", self.MODIFICATION)])
 
-        self.page.select_car_options(options)
-        self.page.car_select.wait_option_enabled("Привод")
-        self.page.set_run_current(self.RUN_CURRENT)
-        self.page.set_texts(self.COMMON_TEXT, self.ADVANTAGES_TEXT, self.PROBLEMS_TEXT)
+        self.add_review_page.select_car_options(options)
+        self.add_review_page.car_select.wait_option_enabled("Привод")
+        self.add_review_page.set_run_current(self.RUN_CURRENT)
+        self.add_review_page.set_texts(self.COMMON_TEXT, self.ADVANTAGES_TEXT, self.PROBLEMS_TEXT)
 
-        self.page.add_review()
-        self.page.wait_add_review()
-        self.page.show_review()
+        self.add_review_page.add_review()
+        self.add_review_page.wait_add_review()
+        self.add_review_page.show_review()
 
-        self.page = ReviewPage(self.driver)
-        self.assertEquals(self.COMMON_TEXT, self.page.review_text.common_text)
-        self.assertEquals(self.ADVANTAGES_TEXT, self.page.review_text.advantages_text)
-        self.assertEquals(self.PROBLEMS_TEXT, self.page.review_text.problems_text)
-
-        # TODO: check rating, model, run current
+        self.review_page = ReviewPage(self.driver)
+        average_rating = round(float(sum([x["rating"] for x in self.RATINGS])) / float(len(self.RATINGS)), 1)
+        self.assertEqual(average_rating, self.review_page.review_avg_rating)
+        self.assertEqual(self.REVIEW_TITLE, self.review_page.review_title)
+        self.assertEquals(self.COMMON_TEXT, self.review_page.review_text.common_text)
+        self.assertEquals(self.ADVANTAGES_TEXT, self.review_page.review_text.advantages_text)
+        self.assertEquals(self.PROBLEMS_TEXT, self.review_page.review_text.problems_text)
 
     def tearDown(self):
-        pass
-        # self.page.logout()
-        # self.driver.quit()
+        self.review_page.remove_review()
+        self.review_page.logout()
+        self.driver.quit()

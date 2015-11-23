@@ -159,3 +159,34 @@ class ReviewText(Component):
     @property
     def problems_text(self):
         return self.driver.find_element_by_xpath(self.PROBLEMS_TEXT_XPATH).text.strip()
+
+
+class ReviewInfo(Component):
+    TITLE_XPATH = '//span[@class="car__title__text"]'
+    AVG_RATING_XPATH = '//*[@class="rating"]/span/span'
+
+    @property
+    def title(self):
+        return self.driver.find_element_by_xpath(self.TITLE_XPATH).text.strip()
+
+    @property
+    def avg_rating(self):
+        return float(self.driver.find_element_by_xpath(self.AVG_RATING_XPATH).get_attribute('title'))
+
+
+class ReviewManagement(Component):
+    REMOVE_BUTTON_XPATH = '//a[@class="link-brd link-brd_underline-no js-user_review__delete js-check_auth"]'
+
+    def remove_review(self):
+        self.driver.find_element_by_xpath(self.REMOVE_BUTTON_XPATH).click()
+
+
+class ReviewRemovePopup(Component):
+    CONFIRM_BUTTON_XPATH = '//button[@class="button js-popup_close js-confirm_yes"]'
+    OVERLAY_XPATH = '//div[@class="overlay js-popup"]'
+
+    def confirm_remove(self):
+        self.driver.find_element_by_xpath(self.CONFIRM_BUTTON_XPATH).click()
+
+    def wait_popup(self):
+        wait_visibility_by_xpath(self.driver, self.OVERLAY_XPATH)
