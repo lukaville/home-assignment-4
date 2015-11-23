@@ -72,7 +72,7 @@ class RatingsBlock(Component):
         return float(self.driver.find_element_by_xpath(self.AVERAGE_RATING_XPATH).text)
 
 
-class ReviewText(Component):
+class AddReviewText(Component):
     COMMON_TEXT_INPUT_XPATH = '//*[@name="common_text"]'
     ADVANTAGES_TEXT_INPUT_XPATH = '//*[@name="advantages_text"]'
     PROBLEMS_TEXT_INPUT_XPATH = '//*[@name="problems_text"]'
@@ -107,12 +107,15 @@ class CarSelect(Component):
     RUN_CURRENT_INPUT_XPATH = '//*[@class="input__data__value selt-run_current" and not(@data-type="masked")]'
 
     def select_option(self, title, value):
-        wait_invisibility_by_xpath(self.driver, self.SELECT_DISABLED_BY_TITLE_XPATH.format(title=title))
+        self.wait_option_enabled(title)
         self.driver.find_element_by_xpath(self.SELECT_BY_TITLE_XPATH.format(title=title)).click()
         self.driver.find_element_by_xpath(self.VALUE_BY_TITLE_XPATH.format(value=value)).click()
 
     def set_run_current(self, value):
         self.driver.find_element_by_xpath(self.RUN_CURRENT_INPUT_XPATH).send_keys(value)
+
+    def wait_option_enabled(self, title):
+        wait_invisibility_by_xpath(self.driver, self.SELECT_DISABLED_BY_TITLE_XPATH.format(title=title))
 
     @property
     def run_current(self):
@@ -128,3 +131,31 @@ class AddReviewButton(Component):
     def add_review(self):
         self.driver.find_element_by_xpath(self.ADD_REVIEW_BUTTON_XPATH).click()
 
+
+class AddResultButtons(Component):
+    SHOW_REVIEW_BUTTON_XPATH = '//*[@class="car-add__done__info__action__submit"]'
+    EDIT_REVIEW_BUTTON_XPATH = '//*[text()="Редактировать"]'
+
+    def show_review(self):
+        self.driver.find_element_by_xpath(self.SHOW_REVIEW_BUTTON_XPATH).click()
+
+    def edit_review(self):
+        self.driver.find_element_by_xpath(self.EDIT_REVIEW_BUTTON_XPATH).click()
+
+
+class ReviewText(Component):
+    COMMON_TEXT_XPATH = '//*[@class="car__text description"]'
+    ADVANTAGES_TEXT_XPATH = '//*[@class="car__text pro"]'
+    PROBLEMS_TEXT_XPATH = '//*[@class="car__text contra"]'
+
+    @property
+    def common_text(self):
+        return self.driver.find_element_by_xpath(self.COMMON_TEXT_XPATH).text.strip()
+
+    @property
+    def advantages_text(self):
+        return self.driver.find_element_by_xpath(self.ADVANTAGES_TEXT_XPATH).text.strip()
+
+    @property
+    def problems_text(self):
+        return self.driver.find_element_by_xpath(self.PROBLEMS_TEXT_XPATH).text.strip()

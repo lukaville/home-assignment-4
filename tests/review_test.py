@@ -6,7 +6,7 @@ from collections import OrderedDict
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities, Remote
 
-from pages import MainPage, AddReviewPage
+from pages import MainPage, AddReviewPage, ReviewPage
 from tests.asserts import CustomAssertions
 from tests.components import RatingsBlock
 
@@ -34,10 +34,6 @@ class BaseTestCase(unittest.TestCase):
 
 
 class LoginTest(BaseTestCase):
-    def tearDown(self):
-        self.page.logout()
-        self.driver.quit()
-
     def test(self):
         self.page = MainPage(self.driver)
         self.page.open()
@@ -45,6 +41,10 @@ class LoginTest(BaseTestCase):
 
         menu_bar = self.page.menu_bar
         self.assertEqual(menu_bar.email_value, self.LOGIN)
+
+    def tearDown(self):
+        self.page.logout()
+        self.driver.quit()
 
 
 class LogoutTest(BaseTestCase, CustomAssertions):
@@ -118,7 +118,7 @@ class CarSelectionTest(BaseTestCase):
         self.driver.quit()
 
 
-class ReviewTextTest(BaseTestCase):
+class ReviewTextInputTest(BaseTestCase):
     ADVANTAGES_TEXT = "Advantages test Advantages test Advantages test Advantages test " \
                       "Advantages test Advantages test Advantages test Advantages test " \
                       "Advantages test Advantages test Advantages test Advantages test "
@@ -143,3 +143,61 @@ class ReviewTextTest(BaseTestCase):
 
     def tearDown(self):
         self.driver.quit()
+
+
+class AddReviewTest(BaseTestCase):
+    # Car text review
+    ADVANTAGES_TEXT = "Advantages" * 40
+    COMMON_TEXT = "Common" * 40
+    PROBLEMS_TEXT = "Problems" * 40
+
+    # Car ratings
+    RATINGS = [
+            {"name": RatingsBlock.DESIGN_RATING_NAME, "rating": 5},
+            {"name": RatingsBlock.COMFORT_RATING_NAME, "rating": 4},
+            {"name": RatingsBlock.CONTROL_RATING_NAME, "rating": 3},
+            {"name": RatingsBlock.ERGONOMICS_RATING_NAME, "rating": 3},
+            {"name": RatingsBlock.RELIABILITY_RATING_NAME, "rating": 2},
+            {"name": RatingsBlock.SERVICE_RATING_NAME, "rating": 1}
+    ]
+
+    # Car options
+    BRAND = "Audi"
+    MODEL = "100"
+    YEAR = "1996"
+    MODIFICATION = "1.6 AT"
+    RUN_CURRENT = "400"
+
+    def setUp(self):
+        self.page = AddReviewPage(self.driver)
+        self.page.open()
+        self.page.login(self.LOGIN, self.PASSWORD)
+
+    def test(self):
+        self.page.set_ratings(self.RATINGS)
+
+        options = OrderedDict([("Марка", self.BRAND),
+                               ("Модель", self.MODEL),
+                               ("Год производства", self.YEAR),
+                               ("Модификация", self.MODIFICATION)])
+
+        self.page.select_car_options(options)
+        self.page.car_select.wait_option_enabled("Привод")
+        self.page.set_run_current(self.RUN_CURRENT)
+        self.page.set_texts(self.COMMON_TEXT, self.ADVANTAGES_TEXT, self.PROBLEMS_TEXT)
+
+        self.page.add_review()
+        self.page.wait_add_review()
+        self.page.show_review()
+
+        self.page = ReviewPage(self.driver)
+        self.assertEquals(self.COMMON_TEXT, self.page.review_text.common_text)
+        self.assertEquals(self.ADVANTAGES_TEXT, self.page.review_text.advantages_text)
+        self.assertEquals(self.PROBLEMS_TEXT, self.page.review_text.problems_text)
+
+        # TODO: check rating, model, run current
+
+    def tearDown(self):
+        pass
+        # self.page.logout()
+        # self.driver.quit()

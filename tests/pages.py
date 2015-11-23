@@ -2,7 +2,9 @@
 
 import urlparse
 
-from components import AuthForm, MenuBar, RatingsBlock, CarSelect, ReviewText, AddReviewButton
+from components import AuthForm, MenuBar, RatingsBlock, CarSelect, AddReviewText, AddReviewButton, AddResultButtons, \
+    ReviewText
+from tests.utils import wait_visibility_by_xpath
 
 
 class Page(object):
@@ -45,8 +47,9 @@ class AddReviewPage(BasePage):
         super(AddReviewPage, self).__init__(driver)
         self.ratings = RatingsBlock(driver)
         self.car_select = CarSelect(driver)
-        self.review_inputs = ReviewText(driver)
+        self.review_inputs = AddReviewText(driver)
         self.add_button = AddReviewButton(driver)
+        self.add_result_buttons = AddResultButtons(driver)
 
     def set_ratings(self, ratings):
         for rating in ratings:
@@ -66,3 +69,15 @@ class AddReviewPage(BasePage):
 
     def add_review(self):
         self.add_button.add_review()
+
+    def wait_add_review(self):
+        wait_visibility_by_xpath(self.driver, self.add_result_buttons.SHOW_REVIEW_BUTTON_XPATH)
+
+    def show_review(self):
+        self.add_result_buttons.show_review()
+
+
+class ReviewPage(BasePage):
+    def __init__(self, driver):
+        super(ReviewPage, self).__init__(driver)
+        self.review_text = ReviewText(driver)
