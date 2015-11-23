@@ -164,6 +164,7 @@ class ReviewText(Component):
 class ReviewInfo(Component):
     TITLE_XPATH = '//span[@class="car__title__text"]'
     AVG_RATING_XPATH = '//*[@class="rating"]/span/span'
+    RUN_XPATH = '//span[@title="run"]/../../span[2]/span'
 
     @property
     def title(self):
@@ -172,6 +173,10 @@ class ReviewInfo(Component):
     @property
     def avg_rating(self):
         return float(self.driver.find_element_by_xpath(self.AVG_RATING_XPATH).get_attribute('title'))
+
+    @property
+    def run_current(self):
+        return self.driver.find_element_by_xpath(self.RUN_XPATH).text
 
 
 class ReviewManagement(Component):

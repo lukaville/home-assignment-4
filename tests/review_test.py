@@ -189,6 +189,7 @@ class AddReviewTest(BaseTestCase):
         self.review_page = ReviewPage(self.driver)
         average_rating = round(float(sum([x["rating"] for x in self.RATINGS])) / float(len(self.RATINGS)), 1)
         self.assertEqual(average_rating, self.review_page.review_avg_rating)
+        self.assertEqual(self.RUN_CURRENT, self.review_page.run_current)
         self.assertEqual(self.REVIEW_TITLE, self.review_page.review_title)
         self.assertEquals(self.COMMON_TEXT, self.review_page.review_text.common_text)
         self.assertEquals(self.ADVANTAGES_TEXT, self.review_page.review_text.advantages_text)

@@ -95,5 +95,9 @@ class ReviewPage(BasePage):
         return self.review_info.title
 
     @property
+    def run_current(self):
+        return self.review_info.run_current
+
+    @property
     def review_avg_rating(self):
         return self.review_info.avg_rating
