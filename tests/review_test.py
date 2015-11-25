@@ -46,7 +46,6 @@ class LoginTest(BaseTestCase):
     def tearDown(self):
         try:
             self.page.logout()
-            self.driver.quit()
         finally:
             self.driver.quit()
 
