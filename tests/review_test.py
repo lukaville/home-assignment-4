@@ -43,8 +43,11 @@ class LoginTest(BaseTestCase):
         self.assertEqual(menu_bar.email_value, self.LOGIN)
 
     def tearDown(self):
-        self.page.logout()
-        self.driver.quit()
+        try:
+            self.page.logout()
+            self.driver.quit()
+        finally:
+            self.driver.quit()
 
 
 class LogoutTest(BaseTestCase, CustomAssertions):
@@ -196,6 +199,8 @@ class AddReviewTest(BaseTestCase):
         self.assertEquals(self.PROBLEMS_TEXT, self.review_page.review_text.problems_text)
 
     def tearDown(self):
-        self.review_page.remove_review()
-        self.review_page.logout()
-        self.driver.quit()
+        try:
+            self.review_page.remove_review()
+            self.review_page.logout()
+        finally:
+            self.driver.quit()
