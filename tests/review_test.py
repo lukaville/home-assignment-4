@@ -6,10 +6,12 @@ from collections import OrderedDict
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities, Remote
+from selenium.webdriver.support.wait import WebDriverWait
 
 from pages import MainPage, AddReviewPage, ReviewPage
 from tests.asserts import CustomAssertions
 from tests.components import RatingsBlock
+from tests.utils import wait_url_ends_with
 
 
 class BaseTestCase(unittest.TestCase):
@@ -172,9 +174,14 @@ class AddReviewTest(BaseTestCase):
     REVIEW_TITLE = BRAND + " " + MODEL + " " + MODIFICATION + " " + YEAR + u" г."
 
     def setUp(self):
+        self.main_page = MainPage(self.driver)
+        self.main_page.open()
+        self.main_page.login(self.LOGIN, self.PASSWORD)
+
+        wait_url_ends_with(self.driver, "/?from=authpopup")
+
         self.add_review_page = AddReviewPage(self.driver)
         self.add_review_page.open()
-        self.add_review_page.login(self.LOGIN, self.PASSWORD)
 
     def test(self):
         self.add_review_page.set_ratings(self.RATINGS)

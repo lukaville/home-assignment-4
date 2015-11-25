@@ -31,3 +31,21 @@ def wait_enabled_by_xpath(driver, xpath):
     WebDriverWait(driver, 30, 0.05).until(
         element_to_be_enabled(xpath)
     )
+
+
+class url_ends_with(object):
+    def __init__(self, url):
+        self.url = url
+
+    def __call__(self, driver):
+        url = driver.current_url
+        if url.endswith(self.url):
+            return url
+        else:
+            return False
+
+
+def wait_url_ends_with(driver, url):
+    WebDriverWait(driver, 30, 0.05).until(
+        url_ends_with(url)
+    )
