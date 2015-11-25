@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import time
 import unittest
 from collections import OrderedDict
 
@@ -79,10 +80,14 @@ class AverageRatingTest(BaseTestCase):
             {"name": RatingsBlock.SERVICE_RATING_NAME, "rating": 1}
         ]
 
-        average_rating = round(float(sum([x["rating"] for x in ratings])) / float(len(ratings)), 1)
-
+        average_rating = float(sum([x["rating"] for x in ratings])) / float(len(ratings))
         self.page.set_ratings(ratings)
-        self.assertAlmostEqual(average_rating, average_rating, places=1)
+
+        # Рейтинг высчитывается за какое-то время в JS. Нет никаких внешних признаков,
+        # по которым можно было бы определить, что средний ретинг уже посчитался.
+        # На stackoverflow пишут, что в таком случае не остается ничего другого.
+        time.sleep(1)
+        self.assertAlmostEqual(average_rating, self.page.ratings.average_rating, places=1)
 
     def tearDown(self):
         self.driver.quit()

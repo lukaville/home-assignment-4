@@ -61,7 +61,7 @@ class RatingsBlock(Component):
     SERVICE_RATING_NAME = 'service_availability_grade'
 
     RATING_RADIO_XPATH = '//*[@name="{name}" and @value="{value}"]'
-    AVERAGE_RATING_XPATH = '//*[@class="js-average_score_val"]'
+    AVERAGE_RATING_XPATH = '//*[@class="rate__value js-average_score_val"]'
 
     def set_rating(self, rating_name, value):
         radio_xpath = self.RATING_RADIO_XPATH.format(name=rating_name, value=value)
