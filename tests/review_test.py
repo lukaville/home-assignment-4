@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 import os
-import time
 import unittest
 from collections import OrderedDict
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities, Remote
-from selenium.webdriver.support.wait import WebDriverWait
 
 from pages import MainPage, AddReviewPage, ReviewPage
 from tests.asserts import CustomAssertions
 from tests.components import RatingsBlock
-from tests.utils import wait_url_ends_with
+from tests.utils import wait_url_ends_with, wait_text_change
 
 
 class BaseTestCase(unittest.TestCase):
@@ -82,12 +80,9 @@ class AverageRatingTest(BaseTestCase):
         ]
 
         average_rating = float(sum([x["rating"] for x in ratings])) / float(len(ratings))
-        self.page.set_ratings(ratings)
 
-        # Рейтинг высчитывается за какое-то время в JS. Нет никаких внешних признаков,
-        # по которым можно было бы определить, что средний ретинг уже посчитался.
-        # На stackoverflow пишут, что в таком случае не остается ничего другого.
-        time.sleep(1)
+        self.page.set_ratings(ratings)
+        wait_text_change(self.driver, self.page.ratings.AVERAGE_RATING_XPATH)
         self.assertAlmostEqual(average_rating, self.page.ratings.average_rating, places=1)
 
     def tearDown(self):

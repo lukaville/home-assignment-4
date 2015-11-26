@@ -49,3 +49,23 @@ def wait_url_ends_with(driver, url):
     WebDriverWait(driver, 30, 0.05).until(
         url_ends_with(url)
     )
+
+
+class element_text_change(object):
+    def __init__(self, init_value, xpath):
+        self.init_value = init_value
+        self.xpath = xpath
+
+    def __call__(self, driver):
+        current_value = driver.find_element(by=By.XPATH, value=self.xpath).text
+        if self.init_value != current_value:
+            return current_value
+        else:
+            return False
+
+
+def wait_text_change(driver, xpath):
+    init_value = driver.find_element(by=By.XPATH, value=xpath).text
+    WebDriverWait(driver, 30, 0.05).until(
+        element_text_change(init_value, xpath)
+    )
