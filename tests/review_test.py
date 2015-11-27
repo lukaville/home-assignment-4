@@ -3,6 +3,7 @@ import os
 import unittest
 from collections import OrderedDict
 
+import time
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities, Remote
 
@@ -114,6 +115,10 @@ class AddReviewErrorsTest(BaseTestCase):
     MODIFICATION = "1.6 AT"
     RUN_CURRENT = "400"
 
+    ADVANTAGES_TEXT = "Advantages" * 40
+    COMMON_TEXT = "Common" * 40
+    PROBLEMS_TEXT = "Problems" * 40
+
     def setUp(self):
         self.create_driver()
         login(self.driver, self.LOGIN, self.PASSWORD)
@@ -148,6 +153,21 @@ class AddReviewErrorsTest(BaseTestCase):
         self.page.set_run_current("123")
         self.page.add_review()
         self.assertFalse(self.page.car_select.is_run_current_invalid())
+
+    def testTextReview(self):
+        self.page.add_review()
+        self.assertTrue(self.page.review_inputs.is_advantages_field_invalid())
+        self.assertTrue(self.page.review_inputs.is_problems_invalid())
+        self.assertTrue(self.page.review_inputs.is_common_field_invalid())
+
+        self.page.review_inputs.set_common_text(self.COMMON_TEXT)
+        self.page.review_inputs.set_advantages_text(self.ADVANTAGES_TEXT)
+        self.page.review_inputs.set_problems_text(self.PROBLEMS_TEXT)
+
+        self.page.add_review()
+        self.assertFalse(self.page.review_inputs.is_advantages_field_invalid())
+        self.assertFalse(self.page.review_inputs.is_problems_invalid())
+        self.assertFalse(self.page.review_inputs.is_common_field_invalid())
 
     def tearDown(self):
         self.driver.quit()

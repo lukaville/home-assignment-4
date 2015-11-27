@@ -61,7 +61,7 @@ class RatingsBlock(Component):
     RELIABILITY_RATING_NAME = 'reliability_grade'
     SERVICE_RATING_NAME = 'service_availability_grade'
 
-    RATING_RADIO_XPATH = '//*[@name="{name}" and @value="{value}"]'
+    RATING_RADIO_XPATH = '//input[@name="{name}" and @value="{value}"]'
     AVERAGE_RATING_XPATH = '//*[@class="rate__value js-average_score_val"]'
     ERROR_RATING_ELEMENT_WITH_TITLE_XPATH = '//div[@class="car__rating__item clear js-field_cont invalid" and @data-title="{data_title}"]'
 
@@ -95,6 +95,13 @@ class AddReviewText(Component):
     ADVANTAGES_TEXT_INPUT_XPATH = '//*[@name="advantages_text"]'
     PROBLEMS_TEXT_INPUT_XPATH = '//*[@name="problems_text"]'
 
+    COMMON_TEXT_BLOCK_XPATH = '//div[contains(@class, "car__text js-field_cont")' \
+                              ' and @data-title="Общее впечатление"]'
+    ADVANTAGES_TEXT_BLOCK_XPATH = '//div[contains(@class, "car__text js-field_cont")' \
+                                  ' and @data-title="Достоинства"]'
+    PROBLEMS_TEXT_BLOCK_XPATH = '//div[contains(@class, "car__text js-field_cont")' \
+                                ' and @data-title="Недостатки"]'
+
     def set_common_text(self, text):
         self.driver.find_element_by_xpath(self.COMMON_TEXT_INPUT_XPATH).send_keys(text)
 
@@ -103,6 +110,18 @@ class AddReviewText(Component):
 
     def set_problems_text(self, text):
         self.driver.find_element_by_xpath(self.PROBLEMS_TEXT_INPUT_XPATH).send_keys(text)
+
+    def is_common_field_invalid(self):
+        element = self.driver.find_element_by_xpath(self.COMMON_TEXT_BLOCK_XPATH)
+        return 'invalid' in element.get_attribute('class')
+
+    def is_advantages_field_invalid(self):
+        element = self.driver.find_element_by_xpath(self.ADVANTAGES_TEXT_BLOCK_XPATH)
+        return 'invalid' in element.get_attribute('class')
+
+    def is_problems_invalid(self):
+        element = self.driver.find_element_by_xpath(self.PROBLEMS_TEXT_BLOCK_XPATH)
+        return 'invalid' in element.get_attribute('class')
 
     @property
     def common_text(self):
@@ -191,7 +210,7 @@ class ReviewText(Component):
 
 class ReviewInfo(Component):
     TITLE_XPATH = '//span[@class="car__title__text"]'
-    AVG_RATING_XPATH = '//*[@class="rating"]/span/span'
+    AVG_RATING_XPATH = '//span[@class="rating"]/span[1]/span'
     RUN_XPATH = '//span[@title="run"]/../../span[2]/span'
 
     @property
