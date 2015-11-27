@@ -244,14 +244,31 @@ class ReviewRemovePopup(Component):
         wait_visibility_by_xpath(self.driver, self.OVERLAY_XPATH)
 
 
-class ByeFilters(Component):
+class BuyFilters(Component):
     FILTER_SELECTION_XPATH = '//div[contains(@data-params, "{name}")]/div[1]'
     FILTER_VALUE_XPATH = '//div[@class="input__data__value js-select__options__item ' \
                          'input__data__value_in-group" and text()="{value}"]'
 
+    SUBMIT_BUTTON_XPATH = '//a[@class="button button_wide js-form-submit"]'
+
     def select_filter(self, name, value):
         self.driver.find_element_by_xpath(self.FILTER_SELECTION_XPATH.format(name=name)).click()
         self.driver.find_element_by_xpath(self.FILTER_VALUE_XPATH.format(value=value)).click()
+
+    def submit_filters(self):
+        self.driver.find_element_by_xpath(self.SUBMIT_BUTTON_XPATH).click()
+
+
+class CarBuyBlock(Component):
+    CAR_TITLE_START_WITHOUT_XPATH = '//span[@class="offer-card__title" and not(starts-with(text(), "{mark}"))]'
+
+    def if_car_without_mark_exists(self, mark):
+        try:
+            elemnt = self.driver.find_element_by_xpath(self.CAR_TITLE_START_WITHOUT_XPATH.format(mark=mark))
+            print elemnt.text()
+        except NoSuchElementException:
+            return False
+        return True
 
 
 class BuyFilterTabs(Component):
@@ -277,6 +294,7 @@ class BuyResultItems(Component):
 
     def get_result_count(self):
         return len(self.driver.find_elements_by_xpath(self.OFFER_CARD_XPATH))
+
 
 class BuyResultCountBlock(Component):
     RESULTS_20_XPATH = '//*[contains(@class, "pager__pin pager__pin_perpage ") and text()="20"]'

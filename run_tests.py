@@ -3,7 +3,7 @@
 import sys
 import unittest
 
-from tests.buy_tests import CheckFilterTabs, CheckNumberOfResults
+from tests.buy_tests import FilterBuyTestCase, CheckFilterTabs, CheckNumberOfResults
 from tests.review_test import CarSelectionTest, LoginTest, LogoutTest, AverageRatingTest, ReviewTextInputTest, \
     AddReviewTest, AddReviewErrorsTest
 
@@ -17,7 +17,8 @@ if __name__ == '__main__':
         unittest.makeSuite(ReviewTextInputTest),
         unittest.makeSuite(AddReviewTest),
         unittest.makeSuite(CheckFilterTabs),
-        unittest.makeSuite(CheckNumberOfResults)
+        unittest.makeSuite(CheckNumberOfResults),
+        unittest.makeSuite(FilterBuyTestCase)
     ))
     result = unittest.TextTestRunner().run(suite)
     sys.exit(not result.wasSuccessful())

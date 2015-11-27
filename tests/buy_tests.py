@@ -1,7 +1,22 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 from tests.base import BaseTestCase
 from tests.pages import BuyPage
+
+
+class FilterBuyTestCase(BaseTestCase):
+    def setUp(self):
+        self.create_driver()
+        self.page = BuyPage(self.driver)
+        self.page.open()
+
+    def test_brand(self):
+        self.page.filters.select_filter('Марка', 'BMW')
+        self.page.filters.submit_filters()
+        self.assertFalse(self.page.car_buy_block.if_car_without_mark_exists('BMW'))
+
+    def tearDown(self):
+        self.driver.quit()
 
 
 class CheckFilterTabs(BaseTestCase):

@@ -3,7 +3,8 @@
 import urlparse
 
 from components import AuthForm, MenuBar, RatingsBlock, CarSelect, AddReviewText, AddReviewButton, AddResultButtons, \
-    ReviewText, ReviewManagement, ReviewRemovePopup, ReviewInfo, BuyFilterTabs, BuyResultItems, BuyResultCountBlock
+    ReviewText, ReviewManagement, ReviewRemovePopup, ReviewInfo, BuyFilters, CarBuyBlock, BuyFilterTabs, BuyResultItems, \
+    BuyResultCountBlock
 from tests.utils import wait_visibility_by_xpath
 
 
@@ -108,6 +109,8 @@ class BuyPage(BasePage):
 
     def __init__(self, driver):
         super(BasePage, self).__init__(driver)
+        self.filters = BuyFilters(self.driver)
+        self.car_buy_block = CarBuyBlock(self.driver)
         self.filter_tabs = BuyFilterTabs(driver)
         self.buy_results = BuyResultItems(driver)
         self.buy_result_count = BuyResultCountBlock(driver)
