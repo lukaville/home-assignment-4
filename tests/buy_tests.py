@@ -22,3 +22,23 @@ class CheckFilterTabs(BaseTestCase):
 
     def tearDown(self):
         self.driver.quit()
+
+
+class CheckNumberOfResults(BaseTestCase):
+    def setUp(self):
+        self.create_driver()
+        self.page = BuyPage(self.driver)
+        self.page.open()
+
+    def test(self):
+        self.page.buy_result_count.set_max_results_20()
+        self.assertGreaterEqual(20, self.page.buy_results.get_result_count())
+
+        self.page.buy_result_count.set_max_results_40()
+        self.assertGreaterEqual(40, self.page.buy_results.get_result_count())
+
+        self.page.buy_result_count.set_max_results_100()
+        self.assertGreaterEqual(100, self.page.buy_results.get_result_count())
+
+    def tearDown(self):
+        self.driver.quit()

@@ -274,3 +274,20 @@ class BuyResultItems(Component):
         label_number = len(self.driver.find_elements_by_xpath(self.LABEL_XPATH.format(label=label)))
 
         return offer_number == label_number
+
+    def get_result_count(self):
+        return len(self.driver.find_elements_by_xpath(self.OFFER_CARD_XPATH))
+
+class BuyResultCountBlock(Component):
+    RESULTS_20_XPATH = '//*[contains(@class, "pager__pin pager__pin_perpage ") and text()="20"]'
+    RESULTS_40_XPATH = '//*[contains(@class, "pager__pin pager__pin_perpage ") and text()="40"]'
+    RESULTS_100_XPATH = '//*[contains(@class, "pager__pin pager__pin_perpage ") and text()="100"]'
+
+    def set_max_results_20(self):
+        self.driver.find_element_by_xpath(self.RESULTS_20_XPATH).click()
+
+    def set_max_results_40(self):
+        self.driver.find_element_by_xpath(self.RESULTS_40_XPATH).click()
+
+    def set_max_results_100(self):
+        self.driver.find_element_by_xpath(self.RESULTS_100_XPATH).click()
