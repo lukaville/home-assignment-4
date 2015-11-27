@@ -9,7 +9,7 @@ from selenium.webdriver import DesiredCapabilities, Remote
 from pages import MainPage, AddReviewPage, ReviewPage
 from tests.asserts import CustomAssertions
 from tests.components import RatingsBlock
-from tests.utils import wait_url_ends_with, wait_text_change
+from tests.utils import wait_url_ends_with, wait_text_change, login
 
 
 class BaseTestCase(unittest.TestCase):
@@ -87,6 +87,45 @@ class AverageRatingTest(BaseTestCase):
 
     def tearDown(self):
         self.driver.quit()
+
+
+class AddReviewErrorsTest(BaseTestCase):
+
+    # Not full Car ratings
+    RATINGS = [
+            {"name": RatingsBlock.DESIGN_RATING_NAME, "rating": 5},
+            {"name": RatingsBlock.COMFORT_RATING_NAME, "rating": 4},
+            {"name": RatingsBlock.CONTROL_RATING_NAME, "rating": 3},
+            {"name": RatingsBlock.ERGONOMICS_RATING_NAME, "rating": 3},
+            {"name": RatingsBlock.RELIABILITY_RATING_NAME, "rating": 2},
+            {"name": RatingsBlock.SERVICE_RATING_NAME, "rating": 2}
+    ]
+
+    # Car options
+    BRAND = "Audi"
+    MODEL = "100"
+    YEAR = "1996"
+    MODIFICATION = "1.6 AT"
+    RUN_CURRENT = "400"
+
+    def setUp(self):
+        login(self.driver, self.LOGIN, self.PASSWORD)
+        wait_url_ends_with(self.driver, "/?from=authpopup")
+        self.page = AddReviewPage(self.driver)
+        self.page.open()
+
+    def testRatings(self):
+        self.page.set_ratings(self.RATINGS[:-1])
+        self.page.add_review()
+        self.assertFalse(self.page.ratings.is_rating_valid("Обслуживание и ремонт"))
+        self.page.set_ratings([self.RATINGS[-1]])
+        self.assertTrue(self.page.ratings.is_all_ratings_valid())
+
+    def tearDown(self):
+        try:
+            self.page.logout()
+        finally:
+            self.driver.quit()
 
 
 class CarSelectionTest(BaseTestCase):
@@ -169,12 +208,8 @@ class AddReviewTest(BaseTestCase):
     REVIEW_TITLE = BRAND + " " + MODEL + " " + MODIFICATION + " " + YEAR + u" г."
 
     def setUp(self):
-        self.main_page = MainPage(self.driver)
-        self.main_page.open()
-        self.main_page.login(self.LOGIN, self.PASSWORD)
-
+        login(self.driver, self.LOGIN, self.PASSWORD)
         wait_url_ends_with(self.driver, "/?from=authpopup")
-
         self.add_review_page = AddReviewPage(self.driver)
         self.add_review_page.open()
 

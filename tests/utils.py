@@ -69,3 +69,12 @@ def wait_text_change(driver, xpath):
     WebDriverWait(driver, 30, 0.05).until(
         element_text_change(init_value, xpath)
     )
+
+
+def login(driver, username, password):
+    from tests.pages import MainPage
+
+    main_page = MainPage(driver)
+    main_page.open()
+    main_page.login(username, password)
+    wait_url_ends_with(driver, "/?from=authpopup")

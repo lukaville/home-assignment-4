@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from selenium.common.exceptions import NoSuchElementException
 
 from tests.utils import wait_invisibility_by_xpath, wait_visibility_by_xpath, wait_enabled_by_xpath
 
@@ -62,10 +63,27 @@ class RatingsBlock(Component):
 
     RATING_RADIO_XPATH = '//*[@name="{name}" and @value="{value}"]'
     AVERAGE_RATING_XPATH = '//*[@class="rate__value js-average_score_val"]'
+    ERROR_RATING_ELEMENT_WITH_TITLE_XPATH = '//div[@class="car__rating__item clear js-field_cont invalid" and @data-title="{data_title}"]'
+
+    ERROR_RATING_ELEMENT_XPATH = '//div[@class="car__rating__item clear js-field_cont invalid"]'
 
     def set_rating(self, rating_name, value):
         radio_xpath = self.RATING_RADIO_XPATH.format(name=rating_name, value=value)
         self.driver.find_element_by_xpath(radio_xpath).click()
+
+    def is_rating_valid(self, data_title):
+        try:
+            self.driver.find_element_by_xpath(self.ERROR_RATING_ELEMENT_WITH_TITLE_XPATH.format(data_title=data_title))
+        except NoSuchElementException:
+            return True
+        return False
+
+    def is_all_ratings_valid(self):
+        try:
+            self.driver.find_element_by_xpath(self.ERROR_RATING_ELEMENT_XPATH)
+        except NoSuchElementException:
+            return True
+        return False
 
     @property
     def average_rating(self):
