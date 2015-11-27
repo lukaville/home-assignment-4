@@ -129,6 +129,10 @@ class CarSelect(Component):
         self.driver.find_element_by_xpath(self.SELECT_BY_TITLE_XPATH.format(title=title)).click()
         self.driver.find_element_by_xpath(self.VALUE_BY_TITLE_XPATH.format(value=value)).click()
 
+    def is_option_disabled(self, title):
+        element = self.driver.find_element_by_xpath(self.SELECT_BY_TITLE_XPATH.format(title=title))
+        return 'invalid' in element.get_attribute('class')
+
     def set_run_current(self, value):
         self.driver.find_element_by_xpath(self.RUN_CURRENT_INPUT_XPATH).send_keys(value)
 

@@ -3,6 +3,7 @@ import os
 import unittest
 from collections import OrderedDict
 
+import time
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities, Remote
 
@@ -114,12 +115,24 @@ class AddReviewErrorsTest(BaseTestCase):
         self.page = AddReviewPage(self.driver)
         self.page.open()
 
-    def testRatings(self):
-        self.page.set_ratings(self.RATINGS[:-1])
+    # def testRatings(self):
+    #     pass
+        # self.page.set_ratings(self.RATINGS[:-1])
+        # self.page.add_review()
+        # self.assertFalse(self.page.ratings.is_rating_valid("Обслуживание и ремонт"))
+        # self.page.set_ratings([self.RATINGS[-1]])
+        # self.assertTrue(self.page.ratings.is_all_ratings_valid())
+
+    def testCarParams(self):
+        options = OrderedDict([('Марка', self.BRAND),
+                               ('Модель', self.MODEL),
+                               ('Год производства', self.YEAR)])
+        self.page.select_car_options(options)
         self.page.add_review()
-        self.assertFalse(self.page.ratings.is_rating_valid("Обслуживание и ремонт"))
-        self.page.set_ratings([self.RATINGS[-1]])
-        self.assertTrue(self.page.ratings.is_all_ratings_valid())
+        self.assertTrue(self.page.car_select.is_option_disabled('Модификация'))
+        self.assertTrue(self.page.car_select.is_option_disabled('Кузов'))
+        self.assertTrue(self.page.car_select.is_option_disabled('Объем двигателя'))
+        self.assertTrue(self.page.car_select.is_option_disabled('КПП'))
 
     def tearDown(self):
         try:
