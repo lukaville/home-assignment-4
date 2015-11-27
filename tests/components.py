@@ -123,14 +123,20 @@ class CarSelect(Component):
     SELECT_DISABLED_BY_TITLE_XPATH = '//*[@data-title="{title}"]/div[1][contains(@class, "input__box_disabled")]'
     VALUE_BY_TITLE_XPATH = '//*[contains(@class, "input__data__value") and text()="{value}"]'
     RUN_CURRENT_INPUT_XPATH = '//*[@class="input__data__value selt-run_current" and not(@data-type="masked")]'
+    RUN_CURRENT_BLOCK_XPATH = '//*[contains(@class, "input selt-run_current    ' \
+                              'input_select input_select-dual js-select    js-field_cont")]'
 
     def select_option(self, title, value):
         self.wait_option_enabled(title)
         self.driver.find_element_by_xpath(self.SELECT_BY_TITLE_XPATH.format(title=title)).click()
         self.driver.find_element_by_xpath(self.VALUE_BY_TITLE_XPATH.format(value=value)).click()
 
-    def is_option_disabled(self, title):
+    def is_option_invalid(self, title):
         element = self.driver.find_element_by_xpath(self.SELECT_BY_TITLE_XPATH.format(title=title))
+        return 'invalid' in element.get_attribute('class')
+
+    def is_run_current_invalid(self):
+        element = self.driver.find_element_by_xpath(self.RUN_CURRENT_BLOCK_XPATH)
         return 'invalid' in element.get_attribute('class')
 
     def set_run_current(self, value):

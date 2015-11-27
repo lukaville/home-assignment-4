@@ -3,7 +3,6 @@ import os
 import unittest
 from collections import OrderedDict
 
-import time
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities, Remote
 
@@ -24,18 +23,22 @@ class BaseTestCase(unittest.TestCase):
         'CHROME': webdriver.Chrome
     }
 
-    @classmethod
-    def setUpClass(cls):
-        if cls.LOCAL:
-            cls.driver = cls.drivers[cls.BROWSER]()
+    def create_driver(self):
+        if self.LOCAL:
+            self.driver = self.drivers[self.BROWSER]()
         else:
-            cls.driver = Remote(
+            self.driver = Remote(
                 command_executor='http://127.0.0.1:4444/wd/hub',
-                desired_capabilities=getattr(DesiredCapabilities, cls.BROWSER).copy()
+                desired_capabilities=getattr(DesiredCapabilities, self.BROWSER).copy()
             )
 
 
 class LoginTest(BaseTestCase):
+    def setUp(self):
+        self.create_driver()
+        self.page = AddReviewPage(self.driver)
+        self.page.open()
+
     def test(self):
         self.page = MainPage(self.driver)
         self.page.open()
@@ -53,6 +56,7 @@ class LoginTest(BaseTestCase):
 
 class LogoutTest(BaseTestCase, CustomAssertions):
     def setUp(self):
+        self.create_driver()
         self.page = MainPage(self.driver)
         self.page.open()
         self.page.login(self.LOGIN, self.PASSWORD)
@@ -67,6 +71,7 @@ class LogoutTest(BaseTestCase, CustomAssertions):
 
 class AverageRatingTest(BaseTestCase):
     def setUp(self):
+        self.create_driver()
         self.page = AddReviewPage(self.driver)
         self.page.open()
 
@@ -110,18 +115,20 @@ class AddReviewErrorsTest(BaseTestCase):
     RUN_CURRENT = "400"
 
     def setUp(self):
+        self.create_driver()
         login(self.driver, self.LOGIN, self.PASSWORD)
         wait_url_ends_with(self.driver, "/?from=authpopup")
         self.page = AddReviewPage(self.driver)
         self.page.open()
 
-    # def testRatings(self):
-    #     pass
-        # self.page.set_ratings(self.RATINGS[:-1])
-        # self.page.add_review()
-        # self.assertFalse(self.page.ratings.is_rating_valid("Обслуживание и ремонт"))
-        # self.page.set_ratings([self.RATINGS[-1]])
-        # self.assertTrue(self.page.ratings.is_all_ratings_valid())
+    def testRatings(self):
+        self.page.set_ratings(self.RATINGS[:-1])
+        self.page.add_review()
+        self.assertFalse(self.page.ratings.is_rating_valid("Обслуживание и ремонт"))
+
+        self.page.set_ratings([self.RATINGS[-1]])
+        self.page.add_review()
+        self.assertTrue(self.page.ratings.is_all_ratings_valid())
 
     def testCarParams(self):
         options = OrderedDict([('Марка', self.BRAND),
@@ -129,16 +136,21 @@ class AddReviewErrorsTest(BaseTestCase):
                                ('Год производства', self.YEAR)])
         self.page.select_car_options(options)
         self.page.add_review()
-        self.assertTrue(self.page.car_select.is_option_disabled('Модификация'))
-        self.assertTrue(self.page.car_select.is_option_disabled('Кузов'))
-        self.assertTrue(self.page.car_select.is_option_disabled('Объем двигателя'))
-        self.assertTrue(self.page.car_select.is_option_disabled('КПП'))
+        self.assertTrue(self.page.car_select.is_option_invalid('Модификация'))
+        self.assertTrue(self.page.car_select.is_option_invalid('Кузов'))
+        self.assertTrue(self.page.car_select.is_option_invalid('Объем двигателя'))
+        self.assertTrue(self.page.car_select.is_option_invalid('КПП'))
+
+    def testCurrentRun(self):
+        self.page.add_review()
+        self.assertTrue(self.page.car_select.is_run_current_invalid())
+
+        self.page.set_run_current("123")
+        self.page.add_review()
+        self.assertFalse(self.page.car_select.is_run_current_invalid())
 
     def tearDown(self):
-        try:
-            self.page.logout()
-        finally:
-            self.driver.quit()
+        self.driver.quit()
 
 
 class CarSelectionTest(BaseTestCase):
@@ -150,6 +162,7 @@ class CarSelectionTest(BaseTestCase):
     RESULT_CURRENT = "123 321"
 
     def setUp(self):
+        self.create_driver()
         self.page = AddReviewPage(self.driver)
         self.page.open()
 
@@ -180,6 +193,7 @@ class ReviewTextInputTest(BaseTestCase):
     PROBLEMS_TEXT = "Problems" * 40
 
     def setUp(self):
+        self.create_driver()
         self.page = AddReviewPage(self.driver)
         self.page.open()
 
@@ -221,6 +235,7 @@ class AddReviewTest(BaseTestCase):
     REVIEW_TITLE = BRAND + " " + MODEL + " " + MODIFICATION + " " + YEAR + u" г."
 
     def setUp(self):
+        self.create_driver()
         login(self.driver, self.LOGIN, self.PASSWORD)
         wait_url_ends_with(self.driver, "/?from=authpopup")
         self.add_review_page = AddReviewPage(self.driver)
