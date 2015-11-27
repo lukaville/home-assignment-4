@@ -242,3 +242,14 @@ class ReviewRemovePopup(Component):
 
     def wait_popup(self):
         wait_visibility_by_xpath(self.driver, self.OVERLAY_XPATH)
+
+
+class ByeFilters(Component):
+    FILTER_SELECTION_XPATH = '//div[contains(@data-params, "{name}")]/div[1]'
+    FILTER_VALUE_XPATH = '//div[@class="input__data__value js-select__options__item ' \
+                         'input__data__value_in-group" and text()="{value}"]'
+
+    def select_filter(self, name, value):
+        self.driver.find_element_by_xpath(self.FILTER_SELECTION_XPATH.format(name=name)).click()
+        self.driver.find_element_by_xpath(self.FILTER_VALUE_XPATH.format(value=value)).click()
+

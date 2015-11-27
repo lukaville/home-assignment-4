@@ -1,37 +1,11 @@
 # -*- coding: utf-8 -*-
-import os
-import unittest
+
 from collections import OrderedDict
-
-import time
-from selenium import webdriver
-from selenium.webdriver import DesiredCapabilities, Remote
-
 from pages import MainPage, AddReviewPage, ReviewPage
 from tests.asserts import CustomAssertions
+from tests.base import BaseTestCase
 from tests.components import RatingsBlock
 from tests.utils import wait_url_ends_with, wait_text_change, login
-
-
-class BaseTestCase(unittest.TestCase):
-    LOGIN = os.environ['TTHA4LOGIN']
-    PASSWORD = os.environ['TTHA4PASSWORD']
-    BROWSER = os.environ['TTHA4BROWSER']
-    LOCAL = "LOCAL" in os.environ
-
-    drivers = {
-        'FIREFOX': webdriver.Firefox,
-        'CHROME': webdriver.Chrome
-    }
-
-    def create_driver(self):
-        if self.LOCAL:
-            self.driver = self.drivers[self.BROWSER]()
-        else:
-            self.driver = Remote(
-                command_executor='http://127.0.0.1:4444/wd/hub',
-                desired_capabilities=getattr(DesiredCapabilities, self.BROWSER).copy()
-            )
 
 
 class LoginTest(BaseTestCase):

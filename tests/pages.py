@@ -101,3 +101,9 @@ class ReviewPage(BasePage):
     @property
     def review_avg_rating(self):
         return self.review_info.avg_rating
+
+
+class BuyPage(BasePage):
+    def __init__(self, driver):
+        super(BasePage, self).__init__(driver)
+
