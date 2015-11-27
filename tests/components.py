@@ -253,3 +253,24 @@ class ByeFilters(Component):
         self.driver.find_element_by_xpath(self.FILTER_SELECTION_XPATH.format(name=name)).click()
         self.driver.find_element_by_xpath(self.FILTER_VALUE_XPATH.format(value=value)).click()
 
+
+class BuyFilterTabs(Component):
+    NEW_FILTER_TAB_XPATH = '//*[@class="sort__pin__name" and text()="Новые"]'
+    GUARANTEE_FILTER_TAB_XPATH = '//*[@class="sort__pin__name" and text()="На гарантии с пробегом"]'
+
+    def set_filter_new(self):
+        self.driver.find_element_by_xpath(self.NEW_FILTER_TAB_XPATH).click()
+
+    def set_filter_guarantee(self):
+        self.driver.find_element_by_xpath(self.GUARANTEE_FILTER_TAB_XPATH).click()
+
+
+class BuyResultItems(Component):
+    OFFER_CARD_XPATH = u'//*[@class="offer-card__box clear"]'
+    LABEL_XPATH = u'//*[@class="offer-card__contacts"]/*/*[@class="offer-card__point__in" and text()="{label}"]'
+
+    def is_car_without_label_exists(self, label):
+        offer_number = len(self.driver.find_elements_by_xpath(self.OFFER_CARD_XPATH))
+        label_number = len(self.driver.find_elements_by_xpath(self.LABEL_XPATH.format(label=label)))
+
+        return offer_number == label_number
