@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from selenium.common.exceptions import NoSuchElementException
 
-from tests.utils import wait_invisibility_by_xpath, wait_visibility_by_xpath, wait_enabled_by_xpath
+from tests.utils import wait_invisibility_by_xpath, wait_visibility_by_xpath, wait_enabled_by_xpath, \
+    wait_presence_by_xpath
 
 
 class Component(object):
@@ -287,12 +288,21 @@ class CarBuyBlock(Component):
 class BuyFilterTabs(Component):
     NEW_FILTER_TAB_XPATH = '//*[@class="sort__pin__name" and text()="Новые"]'
     GUARANTEE_FILTER_TAB_XPATH = '//*[@class="sort__pin__name" and text()="На гарантии с пробегом"]'
+    GUARANTEE_TOOLTIP_BUTTON_XPATH = '//*[@class="sort__pin__hint"]'
+    GUARANTEE_TOOLTIP_XPATH = '//*[@class="tooltip__in js-tooltip_balloon"]'
 
     def set_filter_new(self):
         self.driver.find_element_by_xpath(self.NEW_FILTER_TAB_XPATH).click()
 
     def set_filter_guarantee(self):
         self.driver.find_element_by_xpath(self.GUARANTEE_FILTER_TAB_XPATH).click()
+
+    def get_guarantee_tooltip_button(self):
+        return self.driver.find_element_by_xpath(self.GUARANTEE_TOOLTIP_BUTTON_XPATH)
+
+    def get_guarantee_tooltip(self):
+        wait_presence_by_xpath(self.driver, self.GUARANTEE_TOOLTIP_XPATH)
+        return self.driver.find_element_by_xpath(self.GUARANTEE_TOOLTIP_XPATH)
 
 
 class BuyResultItems(Component):

@@ -1,4 +1,5 @@
 # coding=utf-8
+from selenium.webdriver import ActionChains
 
 from tests.base import BaseTestCase
 from tests.pages import BuyPage
@@ -67,6 +68,24 @@ class CheckNumberOfResults(BaseTestCase):
 
         self.page.buy_result_count.set_max_results_100()
         self.assertGreaterEqual(100, self.page.buy_results.get_result_count())
+
+    def tearDown(self):
+        self.driver.quit()
+
+
+class CheckGuaranteeToolTip(BaseTestCase):
+    def setUp(self):
+        self.create_driver()
+        self.page = BuyPage(self.driver)
+        self.page.open()
+
+    def test(self):
+        action = ActionChains(self.driver)
+        action.move_to_element(self.page.filter_tabs.get_guarantee_tooltip_button())
+        action.perform()
+
+        is_tooltip_visible = self.page.filter_tabs.get_guarantee_tooltip().is_displayed()
+        self.assertTrue(is_tooltip_visible)
 
     def tearDown(self):
         self.driver.quit()

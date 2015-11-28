@@ -15,6 +15,12 @@ def wait_visibility_by_xpath(driver, xpath):
     )
 
 
+def wait_presence_by_xpath(driver, xpath):
+    WebDriverWait(driver, 30, 0.05).until(
+        ec.presence_of_element_located((By.XPATH, xpath))
+    )
+
+
 class element_to_be_enabled(object):
     def __init__(self, xpath):
         self.xpath = xpath
