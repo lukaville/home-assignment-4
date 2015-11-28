@@ -9,6 +9,12 @@ def wait_invisibility_by_xpath(driver, xpath):
     )
 
 
+def wait_clickable_by_xpath(driver, xpath):
+    WebDriverWait(driver, 30, 0.05).until(
+        ec.element_to_be_clickable((By.XPATH, xpath))
+    )
+
+
 def wait_visibility_by_xpath(driver, xpath):
     WebDriverWait(driver, 30, 0.05).until(
         ec.visibility_of_element_located((By.XPATH, xpath))

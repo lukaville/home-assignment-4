@@ -2,7 +2,7 @@
 from selenium.common.exceptions import NoSuchElementException
 
 from tests.utils import wait_invisibility_by_xpath, wait_visibility_by_xpath, wait_enabled_by_xpath, \
-    wait_presence_by_xpath
+    wait_presence_by_xpath, wait_clickable_by_xpath
 
 
 class Component(object):
@@ -177,6 +177,8 @@ class AddReviewButton(Component):
     ADD_REVIEW_BUTTON_XPATH = '//button[@class="button js-check_auth"]'
 
     def add_review(self):
+        wait_visibility_by_xpath(self.driver, self.ADD_REVIEW_BUTTON_XPATH)
+        wait_clickable_by_xpath(self.driver, self.ADD_REVIEW_BUTTON_XPATH)
         self.driver.find_element_by_xpath(self.ADD_REVIEW_BUTTON_XPATH).click()
 
 
