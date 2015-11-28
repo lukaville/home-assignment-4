@@ -254,6 +254,7 @@ class BuyFilters(Component):
 
     OPEN_REGION_POPUP_LINK_XPATH = '//*[@class="link-brd__text js-geo_name"]'
     REGION_SELECT_ITEM = u'//*[contains(@class, "input__data__value js-field_item") and text()="{region}"]'
+    REGION_COUNTRY_TAB_XPATH = u'//*[@class="tab__pin__text" and text()="{country}"]'
 
     SUBMIT_REGION_XPATH = '//*[@class="button js-control_submit"]'
     SUBMIT_BUTTON_XPATH = '//a[@class="button button_wide js-form-submit"]'
@@ -269,9 +270,15 @@ class BuyFilters(Component):
     def select_only_with_photo(self):
         self.driver.find_element_by_xpath(self.ONLY_WITH_PHOTO_CHECKBOX_XPATH).click()
 
-    def set_region(self, region):
+    def open_region_popup(self):
         self.driver.find_element_by_xpath(self.OPEN_REGION_POPUP_LINK_XPATH).click()
 
+    def set_region_country(self, country):
+        tab_xpath = self.REGION_COUNTRY_TAB_XPATH.format(country=country)
+        wait_visibility_by_xpath(self.driver, tab_xpath)
+        self.driver.find_element_by_xpath(tab_xpath).click()
+
+    def set_region(self, region):
         select_element = self.REGION_SELECT_ITEM.format(region=region)
         wait_visibility_by_xpath(self.driver, select_element)
         self.driver.find_element_by_xpath(select_element).click()
@@ -322,6 +329,7 @@ class BuyResultItems(Component):
     OFFER_CARD_XPATH = u'//*[@class="offer-card__box clear"]'
     LABEL_XPATH = u'//*[@class="offer-card__contacts"]/*/*[@class="offer-card__point__in" and text()="{label}"]'
     CITY_XPATH = u'//*[@class="offer-card__contacts"]/*[@class="offer-card__contacts__item offer-card__contacts__item_dotted" and text()="{city}"]'
+    AD_XPATH = u'//*[@class="search-list__related"]/div[contains(@class, "offer-card")]'
 
     def is_car_without_label_exists(self, label):
         offer_number = len(self.driver.find_elements_by_xpath(self.OFFER_CARD_XPATH))
@@ -331,6 +339,9 @@ class BuyResultItems(Component):
 
     def get_result_count(self):
         return len(self.driver.find_elements_by_xpath(self.OFFER_CARD_XPATH))
+
+    def get_ad_count(self):
+        return len(self.driver.find_elements_by_xpath(self.AD_XPATH))
 
     def get_result_count_by_city(self, city):
         return len(self.driver.find_elements_by_xpath(self.CITY_XPATH.format(city=city)))

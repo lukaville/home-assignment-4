@@ -97,11 +97,22 @@ class CheckRegionFilter(BaseTestCase):
         self.page = BuyPage(self.driver)
         self.page.open()
 
-    def test(self):
-        self.page.filters.set_region(u"Санкт-Петербург")
+    def testRussia(self):
+        self.page.filters.open_region_popup()
+        self.page.filters.set_region(u"Андреевка")
         result_count_all = self.page.buy_results.get_result_count()
-        result_count_city = self.page.buy_results.get_result_count_by_city(u"Санкт-Петербург")
-        self.assertEqual(result_count_all, result_count_city)
+        result_count_city = self.page.buy_results.get_result_count_by_city(u"Андреевка")
+        ad_count = self.page.buy_results.get_ad_count()
+        self.assertEqual(result_count_all - ad_count, result_count_city)
+
+    def testOther(self):
+        self.page.filters.open_region_popup()
+        self.page.filters.set_region_country(u"Беларусь")
+        self.page.filters.set_region(u"Минск")
+        result_count_all = self.page.buy_results.get_result_count()
+        result_count_city = self.page.buy_results.get_result_count_by_city(u"Минск")
+        ad_count = self.page.buy_results.get_ad_count()
+        self.assertEqual(result_count_all - ad_count, result_count_city)
 
     def tearDown(self):
         self.driver.quit()
