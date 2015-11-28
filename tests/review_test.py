@@ -249,7 +249,6 @@ class AddReviewTest(BaseTestCase):
         self.add_review_page.set_texts(self.COMMON_TEXT, self.ADVANTAGES_TEXT, self.PROBLEMS_TEXT)
 
         self.add_review_page.add_review()
-        self.add_review_page.wait_add_review()
         self.add_review_page.show_review()
 
         self.review_page = ReviewPage(self.driver)

@@ -185,6 +185,7 @@ class AddResultButtons(Component):
     EDIT_REVIEW_BUTTON_XPATH = '//*[text()="Редактировать"]'
 
     def show_review(self):
+        wait_enabled_by_xpath(self.driver, self.SHOW_REVIEW_BUTTON_XPATH)
         self.driver.find_element_by_xpath(self.SHOW_REVIEW_BUTTON_XPATH).click()
 
     def edit_review(self):
