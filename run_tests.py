@@ -9,15 +9,15 @@ from tests.review_test import CarSelectionTest, LoginTest, LogoutTest, AverageRa
 
 if __name__ == '__main__':
     suite = unittest.TestSuite((
-        unittest.makeSuite(AddReviewErrorsTest),
-        unittest.makeSuite(LoginTest),
-        unittest.makeSuite(LogoutTest),
-        unittest.makeSuite(AverageRatingTest),
-        unittest.makeSuite(CarSelectionTest),
-        unittest.makeSuite(ReviewTextInputTest),
-        unittest.makeSuite(AddReviewTest),
-        unittest.makeSuite(CheckFilterTabs),
-        unittest.makeSuite(CheckNumberOfResults),
+        # unittest.makeSuite(AddReviewErrorsTest),
+        # unittest.makeSuite(LoginTest),
+        # unittest.makeSuite(LogoutTest),
+        # unittest.makeSuite(AverageRatingTest),
+        # unittest.makeSuite(CarSelectionTest),
+        # unittest.makeSuite(ReviewTextInputTest),
+        # unittest.makeSuite(AddReviewTest),
+        # unittest.makeSuite(CheckFilterTabs),
+        # unittest.makeSuite(CheckNumberOfResults),
         unittest.makeSuite(FilterBuyTestCase)
     ))
     result = unittest.TextTestRunner().run(suite)

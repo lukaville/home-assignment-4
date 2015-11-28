@@ -245,27 +245,40 @@ class ReviewRemovePopup(Component):
 
 
 class BuyFilters(Component):
-    FILTER_SELECTION_XPATH = '//div[contains(@data-params, "{name}")]/div[1]'
-    FILTER_VALUE_XPATH = '//div[@class="input__data__value js-select__options__item ' \
-                         'input__data__value_in-group" and text()="{value}"]'
+    FILTER_DISABLED_XPATH = '//div[@class="input__box input__box_select js-select__selected ' \
+                            'input__box_disabled"]/div[1]/div[text()="{name}"]'
+    FILTER_SELECTION_XPATH = '//div[@class="input__data__value js-select__selected__option" and text()="{name}"]'
+    FILTER_VALUE_XPATH = '//div[contains(@class, "input__data__value js-select__options__item") and text()="{value}"]'
+    ONLY_WITH_PHOTO_CHECKBOX_XPATH = '//i[@class="input-flag__flag js-track_click"]'
 
     SUBMIT_BUTTON_XPATH = '//a[@class="button button_wide js-form-submit"]'
 
     def select_filter(self, name, value):
+        wait_invisibility_by_xpath(self.driver, self.FILTER_DISABLED_XPATH.format(name=name))
         self.driver.find_element_by_xpath(self.FILTER_SELECTION_XPATH.format(name=name)).click()
         self.driver.find_element_by_xpath(self.FILTER_VALUE_XPATH.format(value=value)).click()
 
     def submit_filters(self):
         self.driver.find_element_by_xpath(self.SUBMIT_BUTTON_XPATH).click()
 
+    def select_only_with_photo(self):
+        self.driver.find_element_by_xpath(self.ONLY_WITH_PHOTO_CHECKBOX_XPATH).click()
+
 
 class CarBuyBlock(Component):
     CAR_TITLE_START_WITHOUT_XPATH = '//span[@class="offer-card__title" and not(starts-with(text(), "{mark}"))]'
+    CAR_PHOTO_XPATH = '//img[@class="offer-card__pic" and @src="{src}"]'
+
+    def if_car_with_photo_src_exists(self, src):
+        try:
+            self.driver.find_element_by_xpath(self.CAR_PHOTO_XPATH.format(src=src))
+        except NoSuchElementException:
+            return False
+        return True
 
     def if_car_without_mark_exists(self, mark):
         try:
-            elemnt = self.driver.find_element_by_xpath(self.CAR_TITLE_START_WITHOUT_XPATH.format(mark=mark))
-            print elemnt.text()
+            self.driver.find_element_by_xpath(self.CAR_TITLE_START_WITHOUT_XPATH.format(mark=mark))
         except NoSuchElementException:
             return False
         return True

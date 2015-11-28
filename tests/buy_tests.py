@@ -5,15 +5,28 @@ from tests.pages import BuyPage
 
 
 class FilterBuyTestCase(BaseTestCase):
+    WITHOUT_PHOTO_SRC = 'https://cars.mail.ru/img/default/nofoto__car_sedan_small.jpg'
+
     def setUp(self):
         self.create_driver()
         self.page = BuyPage(self.driver)
         self.page.open()
 
     def test_brand(self):
-        self.page.filters.select_filter('Марка', 'BMW')
+        self.page.filters.select_filter('Все марки', 'BMW')
         self.page.filters.submit_filters()
         self.assertFalse(self.page.car_buy_block.if_car_without_mark_exists('BMW'))
+
+    def test_model(self):
+        self.page.filters.select_filter('Все марки', 'Audi')
+        self.page.filters.select_filter('Все модели', '100')
+        self.page.filters.submit_filters()
+        self.assertFalse(self.page.car_buy_block.if_car_without_mark_exists('Audi 100'))
+
+    def test_only_with_photo(self):
+        self.page.filters.select_only_with_photo()
+        self.page.filters.submit_filters()
+        self.assertFalse(self.page.car_buy_block.if_car_with_photo_src_exists(self.WITHOUT_PHOTO_SRC))
 
     def tearDown(self):
         self.driver.quit()
