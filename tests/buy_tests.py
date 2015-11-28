@@ -89,3 +89,19 @@ class CheckGuaranteeToolTip(BaseTestCase):
 
     def tearDown(self):
         self.driver.quit()
+
+
+class CheckRegionFilter(BaseTestCase):
+    def setUp(self):
+        self.create_driver()
+        self.page = BuyPage(self.driver)
+        self.page.open()
+
+    def test(self):
+        self.page.filters.set_region(u"Санкт-Петербург")
+        result_count_all = self.page.buy_results.get_result_count()
+        result_count_city = self.page.buy_results.get_result_count_by_city(u"Санкт-Петербург")
+        self.assertEqual(result_count_all, result_count_city)
+
+    def tearDown(self):
+        self.driver.quit()

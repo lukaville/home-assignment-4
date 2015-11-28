@@ -3,7 +3,8 @@
 import sys
 import unittest
 
-from tests.buy_tests import FilterBuyTestCase, CheckFilterTabs, CheckNumberOfResults, CheckGuaranteeToolTip
+from tests.buy_tests import FilterBuyTestCase, CheckFilterTabs, CheckNumberOfResults, CheckGuaranteeToolTip, \
+    CheckRegionFilter
 from tests.review_test import CarSelectionTest, LoginTest, LogoutTest, AverageRatingTest, ReviewTextInputTest, \
     AddReviewTest, AddReviewErrorsTest
 
@@ -19,7 +20,8 @@ if __name__ == '__main__':
         unittest.makeSuite(CheckFilterTabs),
         unittest.makeSuite(CheckNumberOfResults),
         unittest.makeSuite(FilterBuyTestCase),
-        unittest.makeSuite(CheckGuaranteeToolTip)
+        unittest.makeSuite(CheckGuaranteeToolTip),
+        unittest.makeSuite(CheckRegionFilter)
     ))
     result = unittest.TextTestRunner().run(suite)
     sys.exit(not result.wasSuccessful())
