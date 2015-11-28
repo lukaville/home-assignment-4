@@ -177,8 +177,7 @@ class AddReviewButton(Component):
     ADD_REVIEW_BUTTON_XPATH = '//button[@class="button js-check_auth"]'
 
     def add_review(self):
-        self.driver.find_element_by_xpath(self.ADD_REVIEW_BUTTON_XPATH)\
-            .move_to_element_with_offset(0, 20).click().perform()
+        self.driver.find_element_by_xpath(self.ADD_REVIEW_BUTTON_XPATH).click()
 
 
 class AddResultButtons(Component):
